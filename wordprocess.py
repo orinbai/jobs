@@ -5,9 +5,9 @@ class discretize:
     
     def __init__(self, code='utf8', maxchar=6):
         self.code = 'utf8'
-        self.maxchar = 6
-        self.enumrate = range(1, maxchar)
-        self.signRE = re.compile("[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？、~@#￥%……&*（）]+".decode(self.code))
+        self.maxchar = 6+1
+        self.enumrate = range(1, self.maxchar)
+        self.signRE = re.compile("[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？、~@#￥%……&*（）《》‘’“”；：]+".decode(self.code))
 
     def _removePunctuation(self, wordline):
         return self.signRE.sub(" ".decode(self.code), wordline.decode(self.code))
