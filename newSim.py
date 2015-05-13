@@ -5,16 +5,29 @@ class ClusterClassify:
     def __init__(self, samplefile):
         ### Data Part ###
         self.samplefile = samplefile
+        self.featureOP = {}
         self.symbolHash = {}
         self.fnameHash = {}
         self.colnum = 0
         self._symbol2var()
+        self._featurnCC()
         ### Num Part ###
         self.addbycol = [0]*self.colnum
         self.sumbycol = [0]*self.colnum
         self.addvarcol = [0]*self.colnum
         self.varbycol = [0]*self.colnum
         self.rownum = 0.0
+    
+    def _featurnCC(self):
+        #self.featureOP = dict(zip(range(self.colnum), float))
+        self.featureOP = self.featureOP.fromkeys(range(self.colnum), float)
+        print {}.fromkeys(filter(lambda x: self.symbolHash.has_key(x), range(self.colnum)), str)
+        #self.featureOP.update(tmphash)
+        self.featureOP.update({}.fromkeys(filter(lambda x: self.symbolHash.has_key(x), range(self.colnum)), str))
+        self.featureOP[0] = str
+        self.featureOP[self.colnum-1] = str
+        return True
+        
 
 
     def _symbol2var(self):
@@ -23,8 +36,8 @@ class ClusterClassify:
         for line in f:
             lines = line.strip().split('\t')
             if not lines[-1].startswith('clus'):
-                ### Exclude Name, ClusterName ###
-                self.colnum = len(lines)-2
+                ### Should Exclude Name and ClusterName ###
+                self.colnum = len(lines)
                 tmpnum = range(len(lines))
                 symbolArray = [{} for tmp in tmpnum]
                 fnameHash = dict(zip(tmpnum, lines))
@@ -40,7 +53,7 @@ class ClusterClassify:
         f.close()
 
         for indexnum, tmpline in enumerate(symbolArray):
-            if tmpline: symbolHash[indexnum] = dict(zip(tmpline.keys(), range(len(tmpline.keys()))))
+            if tmpline: self.symbolHash[indexnum] = dict(zip(tmpline.keys(), range(len(tmpline.keys()))))
         return True
 
     def clear(self):
@@ -73,9 +86,6 @@ class ClusterClassify:
         #if AddElement: Matrix.pop()
         return map(lambda x: x/self.rownum, self.varbycol)
 
-    def Prob(self, Matrix):
-
-    
     def Epsilon(self, VARk, VARvk, Nv):
         ### According to the TwoStep Cluster: Epsilon(i) = -Nv*Sum(0.5*log(Vark, Varvk)) ###
         epsilon = 0
@@ -89,4 +99,6 @@ class ClusterClassify:
         #print Nv, epsilon
         #print '='*30
         return epsilon
+    def Prob(self, Matrix):
+        return False
 
